@@ -1,0 +1,49 @@
+# Scenario 1: CrashLoopBackOff - Missing Environment Variable
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-client
+  namespace: agentic-demo
+  labels:
+    app: mysql-client
+    scenario: crashloop-env
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-client
+  template:
+    metadata:
+      labels:
+        app: mysql-client
+    spec:
+      containers:
+      - name: mysql-client
+        image: busybox:latest
+        command: 
+          - /bin/sh
+          - -c
+          - |
+            echo "Connecting to database..."
+            echo "MYSQL_HOST is: $MYSQL_HOST"
+            echo "MYSQL_ROOT_PASSWORD is: $MYSQL_ROOT_PASSWORD"
+            if [ -z "$MYSQL_HOST" ] || [ -z "$MYSQL_ROOT_PASSWORD" ]; then
+              echo "ERROR: Missing required environment variables!"
+              exit 1
+            fi
+            echo "Connection successful (simulated)"
+            sleep 3600
+        # Missing required environment variables will cause crash
+        # env:
+        # - name: MYSQL_HOST
+        #   value: "mysql-service"
+        # - name: MYSQL_ROOT_PASSWORD
+        #   value: "password123"
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"

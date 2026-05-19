@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unhealthy-probe
+  namespace: ai-apps
+  labels:
+    app: unhealthy-probe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unhealthy-probe
+  template:
+    metadata:
+      labels:
+        app: unhealthy-probe
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sh", "-c", "sleep 3600"]
+        livenessProbe:
+          exec:
+            command: ["cat", "/tmp/healthy"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["cat", "/tmp/ready"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+

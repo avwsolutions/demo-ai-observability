@@ -1,0 +1,65 @@
+networks:
+  default:
+    name: demo
+    external: false
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollamadata:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_CONTEXT_LENGTH=8192
+      - OLLAMA_NUM_PARALLEL=5
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    depends_on:
+      - ollama
+    environment:
+      # Point WebUI at the Ollama service on the default Docker network
+      # - OLLAMA_BASE_URL=http://rag-app:8000
+      # Tell Open WebUI where Ollama API is
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - GLOBAL_LOG_LEVEL=DEBUG
+      # Optional: set a secret key to enable login sessions (recommended)
+      # - WEBUI_SECRET_KEY=change_this_to_a_long_random_value
+      # Optional: disable user signup once you've created an admin
+      # - OPENWEBUI_AUTH=False
+    volumes:
+      - openwebuidata:/app/backend/data
+    ports:
+    - "3000:8080"
+    restart: unless-stopped
+  
+  load_models:
+    image: ollama/ollama:latest
+    user: "0"
+    container_name: ollama-init
+    network_mode: "service:ollama"
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_MODELS=${OLLAMA_MODELS}
+      - OLLAMA_MODEL_DEFAULT=${OLLAMA_MODEL_DEFAULT}
+    volumes:
+      - ollamadata:/root/.ollama
+      - ./scripts/initOllama.sh:/initOllama.sh:ro
+    entrypoint: ["/bin/bash", "/initOllama.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "[ -d /root/.ollama/models/manifests/registry.ollama.ai ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+volumes:
+  ollamadata:
+    driver: local
+  openwebuidata:
+    driver: local
+  

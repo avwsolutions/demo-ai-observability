@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oom-test
+  labels:
+    app: oom-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oom-test
+  template:
+    metadata:
+      labels:
+        app: oom-test
+    spec:
+      containers:
+      - name: memory-hog
+        image: python:3.9-slim
+        command: ["python", "-c", "a = ' ' * 300 * 1024 * 1024; import time; time.sleep(300)"]
+        resources:
+          requests:
+            memory: "100Mi"
+          limits:
+            memory: "200Mi"
+

@@ -1,0 +1,12 @@
+# crashloop.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crashy
+spec:
+  containers:
+  - name: crashy-container
+    image: busybox
+    command: ["sh", "-c", "echo Starting && sleep 2 && exit 1"]
+  restartPolicy: Always
+

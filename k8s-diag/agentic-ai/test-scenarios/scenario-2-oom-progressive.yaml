@@ -1,0 +1,47 @@
+# Scenario 2: OOMKilled - Progressive Memory Requirements
+# This demonstrates AI learning optimal resource allocation through trial
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-hungry
+  namespace: agentic-demo
+  labels:
+    app: memory-hungry
+    scenario: oom-progressive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-hungry
+  template:
+    metadata:
+      labels:
+        app: memory-hungry
+    spec:
+      containers:
+      - name: data-processor
+        image: python:3.9-slim
+        command:
+          - python3
+          - -c
+          - |
+            import time
+            # Allocate memory that will exceed initial limit
+            data = []
+            print("Starting memory allocation...")
+            for i in range(100):
+                # Each iteration allocates ~5MB
+                data.append(' ' * (5 * 1024 * 1024))
+                print(f"Allocated {(i+1)*5}MB")
+                time.sleep(0.5)
+            print("Memory allocation complete")
+            time.sleep(3600)
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"  # Too low - will OOMKill around 128MB
+            cpu: "200m"
+        # AI should learn: This app needs 512Mi to run successfully

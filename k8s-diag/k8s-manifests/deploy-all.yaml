@@ -1,0 +1,111 @@
+# deploy-all.yaml
+---
+# broken-nginx
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-nginx
+  labels:
+    app: broken-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-nginx
+  template:
+    metadata:
+      labels:
+        app: broken-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:doesnotexist
+        ports:
+        - containerPort: 80
+---
+# crashy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crashy
+  labels:
+    app: crashy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crashy
+  template:
+    metadata:
+      labels:
+        app: crashy
+    spec:
+      containers:
+      - name: crashy-container
+        image: busybox
+        command: ["sh", "-c", "echo Starting && sleep 2 && exit 1"]
+
+---
+# unhealthy-probe
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unhealthy-probe
+  namespace: ai-apps
+  labels:
+    app: unhealthy-probe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unhealthy-probe
+  template:
+    metadata:
+      labels:
+        app: unhealthy-probe
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sh", "-c", "sleep 3600"]
+        livenessProbe:
+          exec:
+            command: ["cat", "/tmp/healthy"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["cat", "/tmp/ready"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+# oom-test
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oom-test
+  namespace: ai-apps
+  labels:
+    app: oom-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oom-test
+  template:
+    metadata:
+      labels:
+        app: oom-test
+    spec:
+      containers:
+      - name: memory-hog
+        image: python:3.9-slim
+        command: ["python", "-c", "a = ' ' * 300 * 1024 * 1024; import time; time.sleep(300)"]
+        resources:
+          requests:
+            memory: "100Mi"
+          limits:
+            memory: "200Mi"
+
+

@@ -1,0 +1,63 @@
+# Scenario 3: ImagePullBackOff - Typo in Image Name
+# This demonstrates AI learning to detect and fix common typo patterns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-server
+  namespace: agentic-demo
+  labels:
+    app: web-server
+    scenario: image-typo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-server
+  template:
+    metadata:
+      labels:
+        app: web-server
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latst  # Typo: should be "latest"
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-app
+  namespace: agentic-demo
+  labels:
+    app: alpine-app
+    scenario: image-typo-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine-app
+  template:
+    metadata:
+      labels:
+        app: alpine-app
+    spec:
+      containers:
+      - name: alpine
+        image: apline:3.18  # Typo: should be "alpine"
+        command: ["sleep", "3600"]
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
