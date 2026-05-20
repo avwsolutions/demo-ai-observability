@@ -54,7 +54,7 @@ agent = create_agent(
 # --- Run ---
 
 result = agent.invoke(
-    {"messages": [HumanMessage(content="what is 1 + 1?")]}
+    {"messages": [HumanMessage(content="what is 250 + 250 + 500 + 1 * 5?")]}
 )
 
 # The final answer is in the last message

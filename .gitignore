@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+agentic_memory.json
 # Distribution / packaging
 .Python
 build/

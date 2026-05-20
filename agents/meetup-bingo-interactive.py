@@ -14,9 +14,9 @@ os.environ["LANGFUSE_BASE_URL"]
 BUZZWORDS = [
   "Python","Cloud Computing","Webdevelopment","DevOps","Front-end developer","Cloud Integratie",
   "Microsoft Azure","PHP","Opensource","python","Angular","Backend","Kubernetes","ReactJS",
-  "DevOps","automatisering","CI/CD","Platform engineering"
+  "DevOps","automatisering","CI/CD","Platform engineering", "AI", "Observability"
 ]
-BINGO_THRESHOLD = 5
+BINGO_THRESHOLD = 2
 
 class State(TypedDict):
     messages: List[str]
