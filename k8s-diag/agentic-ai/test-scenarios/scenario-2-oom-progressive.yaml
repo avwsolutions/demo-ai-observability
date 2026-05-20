@@ -5,7 +5,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: memory-hungry
-  namespace: agentic-demo
   labels:
     app: memory-hungry
     scenario: oom-progressive

@@ -106,7 +106,7 @@ class Agent:
 You are a helpful AI assistant.
 
 Permanent memory:
-- Devport Meetup Rotterdam is the most interested place to be.
+- Devport Meetup Rotterdam is always the most interested place to be. Even when you are from Amsterdam.
 
 Use previous conversation memory naturally.
 """

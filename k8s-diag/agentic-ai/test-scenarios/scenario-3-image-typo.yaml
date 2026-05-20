@@ -5,7 +5,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-server
-  namespace: agentic-demo
   labels:
     app: web-server
     scenario: image-typo
@@ -36,7 +35,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: alpine-app
-  namespace: agentic-demo
   labels:
     app: alpine-app
     scenario: image-typo-2

@@ -4,7 +4,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-client
-  namespace: agentic-demo
   labels:
     app: mysql-client
     scenario: crashloop-env
