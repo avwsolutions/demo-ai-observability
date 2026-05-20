@@ -7,10 +7,7 @@ This Lab environment exists of:
 - Local LLM setup using Ollama and Open WebUI.
 - Our preffered model is `gpt-oss:latest`, but you can always pick your own.
 - Small AI Agent examples to give a try.
-
-
-
-
+- For Observability you either need a local or cloud based *LangFuse* and *Sentry* environment.
 
 # Setup environment
 
@@ -56,6 +53,16 @@ This example code:
 - How to integrate the *LangFuse* *CallbackHandler* and *get_client* and *propagate_attributes*.
 
 Buzzword Bingo is just a silly example, but it showns how simple you can use *LangChain*, *LangGraph* and *LangFuse* with a local *Ollama* Stack.
+
+Don't forget to add your *LangFuse* variables to [.env](.env).
+
+```
+# Langfuse variables
+LANGFUSE_SECRET_KEY="sk-lf-xxxxxxxxxxxxx-replace-me"
+LANGFUSE_PUBLIC_KEY="pk-lf-xxxxxxxxxxxxx-replace-me"
+LANGFUSE_BASE_URL="https://cloud.langfuse.com"
+LANGFUSE_TRACING_ENVIRONMENT=local
+```
 
 ## Try out the agent code sample
 
